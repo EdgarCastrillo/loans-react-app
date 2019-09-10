@@ -7,6 +7,18 @@ class Form extends Component {
     plazo: ''
   }
 
+  calcularPrestamo = (e) => {
+    e.preventDefault()
+    // console.log('enviado....')
+
+    // Aplicar destructuring
+    const { cantidad, plazo } = this.state
+    // Pasarlo al componente padre
+    this.props.datosPrestamo(cantidad, plazo)
+
+
+  }
+
 
   actualizarState = (e) => {
     // Leer los datos del form
@@ -25,7 +37,7 @@ class Form extends Component {
     const { cantidad, plazo } = this.state
     // leer las variables 
     const noValido = !cantidad || !plazo
-    console.log(noValido)
+    // console.log(noValido)
     // Retornar una respuesta
     return noValido
   }
@@ -34,8 +46,9 @@ class Form extends Component {
   render() { 
     const { cantidad } = this.state
     // console.log(cantidad)
+
     return (
-      <form>
+      <form onSubmit={this.calcularPrestamo}>
         <div>
           <label>Cantidad Prestamo: {cantidad}</label>
           <input
