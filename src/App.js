@@ -5,17 +5,58 @@ import './skeleton.css'
 
 import Form from './components/Form'
 import { calcularTotal } from './helpers'
+import Resultado from './components/Resultado';
+import Mensaje from './components/Mensaje';
+import Spinner from './components/Spinner';
 
 class App extends Component {
+  state = {
+    total: '',
+    cantidad: '',
+    plazo: '',
+    cargando: false,
+  }
+
 
   datosPresatamo = (cantidad, plazo) => {
     // console.log('desde app.js')
     // console.log(cantidad)
     // console.log(plazo)
-    calcularTotal(cantidad, plazo)
+    const total = calcularTotal(cantidad, plazo)
+
+    // Colocar el resultado en el State junto a la cantidad y el plazo
+    this.setState({
+      cargando: true,
+      }, () => {
+      setTimeout(() => {
+        this.setState({
+          total: total,
+          cantidad: cantidad,
+          plazo: plazo,
+          cargando: false
+        })
+      }, 3000)
+    })
   }
 
+
   render() {
+    const { total, plazo, cantidad, cargando } = this.state
+
+    // Cargar un componente condicionalmente
+    let componente
+    if(total === '' && !cargando) {
+      componente = <Mensaje />
+    } else if(cargando) {
+      componente = <Spinner />
+    } else {
+      componente = <Resultado
+                      total={total}
+                      plazo={plazo}
+                      cantidad={cantidad}
+                    />
+    }
+
     return (
       <Fragment>
         <h1>Calcular prestamo</h1>
@@ -23,6 +64,15 @@ class App extends Component {
           <Form 
             datosPrestamo={this.datosPresatamo}
           />
+          <div className="mensajes">
+            {componente}
+            {/* <Resultado
+              total={total}
+              plazo={plazo}
+              cantidad={cantidad}
+            />
+            <Mensaje /> */}
+          </div>
         </div>
       </Fragment>
     );
